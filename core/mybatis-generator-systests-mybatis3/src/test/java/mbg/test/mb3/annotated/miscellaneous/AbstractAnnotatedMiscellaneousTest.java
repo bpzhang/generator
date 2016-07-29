@@ -1,5 +1,5 @@
 /**
- *    Copyright 2006-2015 the original author or authors.
+ *    Copyright 2006-2016 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package mbg.test.mb3.annotated.miscellaneous;
 
 import mbg.test.mb3.AbstractTest;
 import mbg.test.mb3.generated.annotated.miscellaneous.mapper.EnumtestMapper;
+import mbg.test.mb3.generated.annotated.miscellaneous.mapper.GeneratedalwaystestMapper;
+import mbg.test.mb3.generated.annotated.miscellaneous.mapper.GeneratedalwaystestnoupdatesMapper;
 import mbg.test.mb3.generated.annotated.miscellaneous.mapper.MyObjectMapper;
 import mbg.test.mb3.generated.annotated.miscellaneous.mapper.RegexrenameMapper;
 
@@ -28,6 +30,8 @@ public abstract class AbstractAnnotatedMiscellaneousTest extends AbstractTest {
         sqlSessionFactory.getConfiguration().addMapper(EnumtestMapper.class);
         sqlSessionFactory.getConfiguration().addMapper(MyObjectMapper.class);
         sqlSessionFactory.getConfiguration().addMapper(RegexrenameMapper.class);
+        sqlSessionFactory.getConfiguration().addMapper(GeneratedalwaystestMapper.class);
+        sqlSessionFactory.getConfiguration().addMapper(GeneratedalwaystestnoupdatesMapper.class);
     }
 
     @Override
