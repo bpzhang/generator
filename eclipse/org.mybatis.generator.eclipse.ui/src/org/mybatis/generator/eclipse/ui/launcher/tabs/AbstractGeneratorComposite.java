@@ -48,6 +48,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.mybatis.generator.eclipse.ui.Activator;
 import org.mybatis.generator.eclipse.ui.Messages;
 import org.mybatis.generator.eclipse.ui.launcher.GeneratorLaunchConstants;
+import org.mybatis.generator.eclipse.ui.launcher.GeneratorLaunchShortcut;
 import org.mybatis.generator.internal.util.StringUtility;
 
 /**
@@ -63,6 +64,7 @@ import org.mybatis.generator.internal.util.StringUtility;
 public abstract class AbstractGeneratorComposite extends Composite implements GeneratorLaunchConstants {
 
     protected Text txtFileName;
+    protected String javaProjectName;
     private Button btnBrowseWorkplace;
     private Button btnBrowseFileSystem;
 
@@ -137,9 +139,11 @@ public abstract class AbstractGeneratorComposite extends Composite implements Ge
         btnBrowseWorkplace.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                IPath chosenFile = chooseFileFromWorkspace();
+                IResource chosenFile = chooseFileFromWorkspace();
                 if (chosenFile != null) {
-                    txtFileName.setText("${workspace_loc:" + chosenFile.toString() + "}"); //$NON-NLS-1$ //$NON-NLS-2$
+                    IPath path = chosenFile.getFullPath();
+                    txtFileName.setText("${workspace_loc:" + path.toString() + "}"); //$NON-NLS-1$ //$NON-NLS-2$
+                    javaProjectName = GeneratorLaunchShortcut.getJavaProjectNameFromResource(chosenFile);
                 }
             }
         });
@@ -155,11 +159,7 @@ public abstract class AbstractGeneratorComposite extends Composite implements Ge
         btnBrowseFileSystem.setText(Messages.FILE_PICKER_BROWSE_FILE_SYSTEM);
     }
 
-    protected IPath chooseFileFromWorkspace() {
-        // look at class
-        // org.eclipse.wst.xsl.internal.debug.ui.ResourceSelectionBlock
-        // in org.eclipse.wst.xsl.debug.ui plugin for guidance
-
+    protected IResource chooseFileFromWorkspace() {
         ElementTreeSelectionDialog esd = new ElementTreeSelectionDialog(getShell(), new WorkbenchLabelProvider(),
                 new WorkbenchContentProvider());
         esd.setTitle(getDialogTitle());
@@ -173,7 +173,7 @@ public abstract class AbstractGeneratorComposite extends Composite implements Ge
         if (rc == 0) {
             Object[] elements = esd.getResult();
             if (elements.length > 0) {
-                return ((IResource) elements[0]).getFullPath();
+                return (IResource) elements[0];
             }
         }
 
@@ -218,6 +218,7 @@ public abstract class AbstractGeneratorComposite extends Composite implements Ge
         selected = dialog.open();
         if (selected != null) {
             txtFileName.setText(selected);
+            javaProjectName = null;
         }
     }
 

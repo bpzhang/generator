@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.layout.GridLayout;
@@ -71,7 +72,7 @@ public class ConfigurationComposite extends AbstractGeneratorComposite {
                     return false;
                 }
             } else {
-                configurationTab.setErrorMessage(Messages.CONFIGURATION_TAB_FILE_DOESNT_EXIST);
+                configurationTab.setErrorMessage(Messages.FILE_PICKER_FILE_DOESNT_EXIST);
                 return false;
             }
         } catch (CoreException e) {
@@ -81,10 +82,16 @@ public class ConfigurationComposite extends AbstractGeneratorComposite {
 
     public void initializeFrom(ILaunchConfiguration configuration) {
         txtFileName.setText(getTextOrBlank(configuration, ATTR_CONFIGURATION_FILE_NAME));
+        try {
+            javaProjectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
+        } catch (CoreException e) {
+            javaProjectName = null;
+        }
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(ATTR_CONFIGURATION_FILE_NAME, txtFileName.getText());
+        configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, javaProjectName);
     }
 
     @Override
